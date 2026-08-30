@@ -55,7 +55,8 @@ def build_webhook_app(bot) -> web.Application:
                     text=(
                         "✅ *Pembayaran berhasil!*\n\n"
                         f"Paket: `{trans.package}`\n"
-                        "Silakan lanjut kirim nomor HP untuk mulai deploy userbot kamu."
+                        "Ketik /deploy lalu kirim nomor HP (format: 628xxxxxxxxxx) "
+                        "untuk mulai deploy userbot kamu."
                     ),
                     parse_mode="Markdown",
                 )
