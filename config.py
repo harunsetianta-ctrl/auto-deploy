@@ -6,7 +6,7 @@ API_HASH = os.environ.get("API_HASH")
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
 PRICING = {
-    "1_month": 50000,
+    "1_month": 1000,
     "3_months": 130000,
     "lifetime": 300000
 }
