@@ -1,7 +1,8 @@
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, ContextTypes
+from config import BOT_TOKEN
 
-TOKEN = "MASUKKAN_TOKEN_DARI_BOTFATHER"
+TOKEN = BOT_TOKEN
 
 # /start
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
