@@ -224,6 +224,18 @@ async def finish_deploy(update: Update, context: ContextTypes.DEFAULT_TYPE, stri
     return ConversationHandler.END
 
 
+async def deploy_entry_from_number(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Fallback: user kirim nomor HP langsung tanpa ketik /deploy dulu
+    (misal setelah notifikasi pembayaran sukses dari webhook)."""
+    user = db.get_user(update.effective_user.id)
+    if not user or not user.is_premium:
+        return ConversationHandler.END  # bukan bagian dari flow deploy, abaikan diam-diam
+    if user.string_session:
+        return ConversationHandler.END  # sudah punya userbot aktif, abaikan
+    # Premium & belum ada session -> anggap ini nomor HP, langsung proses
+    return await deploy_phone(update, context)
+
+
 async def deploy_cancel(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data.clear()
     await update.message.reply_text("Dibatalkan.")
@@ -239,7 +251,13 @@ async def main():
     app.add_handler(CallbackQueryHandler(menu_callback))
 
     deploy_conv = ConversationHandler(
-        entry_points=[CommandHandler("deploy", deploy_start)],
+        entry_points=[
+            CommandHandler("deploy", deploy_start),
+            MessageHandler(
+                filters.Regex(r"^\+?\d{8,15}$") & filters.TEXT & ~filters.COMMAND,
+                deploy_entry_from_number,
+            ),
+        ],
         states={
             PHONE: [MessageHandler(filters.TEXT & ~filters.COMMAND, deploy_phone)],
             OTP: [MessageHandler(filters.TEXT & ~filters.COMMAND, deploy_otp)],
